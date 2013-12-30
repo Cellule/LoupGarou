@@ -1,0 +1,15 @@
+{
+  "name": "LoupGarou",
+  "version": "0.0.0",
+  "description": "LoupGarou",
+  "main": "app.js",
+  "author": {
+    "name": "Mike",
+    "email": ""
+  },
+  "dependencies": {
+    "express": "3.4.4",
+    "jade": "*",
+    "stylus": "*"
+  }
+}

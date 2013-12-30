@@ -1,0 +1,17 @@
+doctype html
+html(ng-app='loupGarouApp')
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        mixin jsFile(path)
+            script(type='text/javascript', src='javascripts/'+path)
+
+        script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js')
+        script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
+        +jsFile('script.js')
+        +jsFile('angular/filters.js')
+        +jsFile('angular/app.js')
+        +jsFile('angular/controllers.js')
+        +jsFile('angular/services.js')
+    body
+        block content
