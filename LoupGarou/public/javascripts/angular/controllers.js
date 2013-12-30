@@ -1,25 +1,10 @@
-var myApp = angular.module('myApp', ['gameFilters']);
+var myApp = angular.module('loupGarouApp', ['gameFilters']);
 
 var debug = true;
 
-myApp.controller('typeGameController', function ($scope, $http) {
-    $scope.leftType = null;
-    $scope.rightType = null;
-    $scope.dualType = null;
-    $scope.answer = 0;
-    $scope.success = null;
-    $scope.history = [];
-    $scope.historyLimit = 3;
-    $scope.showHistory = false;
-
-    $scope.availableGen = [
-        { name: "Gen I", path: '\\charts\\gen1.json' },
-        { name: "Gen II-V", path: '\\charts\\gen2to5.json' },
-        { name: "Gen VI", path: '\\charts\\gen6.json' }
-    ];
-    $scope.pathToGenFile = $scope.availableGen[0].path;
-    $scope.pkmTypes = [];
-
+myApp.controller('gameController', function ($scope, $http) {
+    $scope.players = [];
+    $scope.nbPlayers = 1;
 
     $scope.$on('dataloaded', function () {
         setTimeout(function () {
@@ -30,38 +15,9 @@ myApp.controller('typeGameController', function ($scope, $http) {
     $scope.requestTypes = function () {
         $http.get($scope.pathToGenFile).success(function (pkmTypes) {
             var nbType = pkmTypes.length;
-
-            var error = false;
-            if (debug) {
-                for (i in pkmTypes) {
-                    var p = pkmTypes[i];
-                    if (p.weakness.length != nbType) {
-                        alert("Error: {0} weakness list ({1}) doesn't match expected size ({2})".format(p.name, p.weakness.length, nbType));
-                        error = true;
-                    }
-                }
-
-                for (i in pkmTypes) {
-                    var p = pkmTypes[i];
-                    for (j in pkmTypes) {
-                        var p2 = pkmTypes[i];
-
-                        for (k in pkmTypes) {
-                            var v = p.weakness[k] * p2.weakness[k];
-                            if (v < 0 || v > 4) {
-                                alert("Error: combo {0}&{1} weakness {2} equals {3}".format(p.name, p2.name, pkmTypes[k].name, v));
-                                error = true;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (!error) {
-                $scope.history = [];
-                $scope.pkmTypes = pkmTypes;
-                $scope.generateType();
-            }
+            $scope.history = [];
+            $scope.pkmTypes = pkmTypes;
+            $scope.generateType();
         }).
         error(function (data, status, headers, config) {
             // called asynchronously if an error occurs
@@ -70,54 +26,29 @@ myApp.controller('typeGameController', function ($scope, $http) {
         });
     }
 
-    $scope.generateType = function () {
-        
-        $scope.leftType = chooseRandPkmType($scope.pkmTypes);
-        $scope.rightType = chooseRandPkmType($scope.pkmTypes);
-        var r = Math.random();
-        var a = $scope.rightType.weakness[$scope.leftType.type];
-        if (r >= 0.8)
-        {
-            $scope.dualType = chooseRandPkmType($scope.pkmTypes,$scope.rightType);
-            a *= $scope.dualType.weakness[$scope.leftType.type];
-            if (a < 0 || a> 4) {
-                alert("Error: combo {0}&{1} weakness {2} equals {3}".format($scope.rightType.name, $scope.dualType.name, $scope.leftType.name, a));
-            }
+
+    $scope.calcPlayer = function()
+    {
+        $scope.players = [];
+        var container = $('#playerSection');
+        var n = $scope.nbPlayers;
+        var width = parseInt(container.css('width'),10);
+        $scope.seatSize = width*0.1;
+        var translation = width/2-$scope.seatSize/2;
+        r = width*0.4;
+        for (var i = 0; i < n; i++) {
+            var angle = 2 * Math.PI * i / n;
+            var x = Math.round(r * Math.cos(angle) + translation);
+            var y = Math.round(r * Math.sin(angle) + translation);
+            var p = {
+                x:x,
+                y:y,
+                style: "width:{0}px;height:{0}px;left:{1}px;top:{2}px;".format($scope.seatSize,x,y)
+            };
+
+            $scope.players.push(p);
         }
-        else
-        {
-            $scope.dualType = null;
-        }
-        
-        $scope.solution = a;
     };
 
-    $scope.choose = function(val)
-    {
-        $scope.answer = val;
-        $scope.success = $scope.solution == val;
-        $scope.pushHistory();
-        $scope.generateType();
-    }
-
-    $scope.pushHistory = function()
-    {
-        var h = {
-            leftType : $scope.leftType ,
-            rightType: $scope.rightType,
-            dualType : $scope.dualType ,
-            answer   : $scope.answer   ,
-            solution : $scope.solution
-        };
-        $scope.history.push(h)
-
-    }
-
-    $scope.historyDisplayChange = function()
-    {
-        $('#gameSection').toggleClass('withHistory', $scope.showHistory);
-    }
-
-    $scope.requestTypes();
-    $scope.historyDisplayChange();
+    $scope.calcPlayer();
 });

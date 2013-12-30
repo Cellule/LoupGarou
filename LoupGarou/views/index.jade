@@ -1,6 +1,11 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title}
+    article(ng-controller='gameController')
+        h1= title
+        p Welcome to #{title}
+        input(type='text' ng-model='nbPlayers' ng-change='calcPlayer()')
+        section#playerSection
+            .playerSeat(ng-repeat='player in players' style='{{player.style}}')
+                |{{player.x}} {{player.y}}
     
