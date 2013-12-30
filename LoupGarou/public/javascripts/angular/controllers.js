@@ -33,21 +33,31 @@ myApp.controller('gameController', function ($scope, $http) {
         var container = $('#playerSection');
         var n = $scope.nbPlayers;
         var width = parseInt(container.css('width'),10);
-        $scope.seatSize = width*0.1;
+        var r = width*0.4;
+        var s = width*0.1;
+
+        var arc = (2*Math.PI*r/n);
+        var oblique = 1.4142135623*s;  //sqrt(2)
+        if( arc < oblique+5 )
+        {
+            s = Math.round((arc-1)/1.4142135623);
+        }
+
         var translation = width/2-$scope.seatSize/2;
-        r = width*0.4;
+
         for (var i = 0; i < n; i++) {
-            var angle = 2 * Math.PI * i / n;
+            var angle = 2 * Math.PI * i / n - Math.PI/2;
             var x = Math.round(r * Math.cos(angle) + translation);
             var y = Math.round(r * Math.sin(angle) + translation);
             var p = {
                 x:x,
                 y:y,
-                style: "width:{0}px;height:{0}px;left:{1}px;top:{2}px;".format($scope.seatSize,x,y)
+                style: "width:{0}px;height:{0}px;left:{1}px;top:{2}px;".format(s,x,y)
             };
 
             $scope.players.push(p);
         }
+        $scope.seatSize = s;
     };
 
     $scope.calcPlayer();
