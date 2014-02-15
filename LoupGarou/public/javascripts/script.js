@@ -10,3 +10,9 @@
     };
 }
 
+function Card(name,imgpath)
+{
+    this.name = name;
+    this.img = imgpath;
+
+}

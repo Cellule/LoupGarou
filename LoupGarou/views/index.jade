@@ -6,6 +6,11 @@ block content
         p Welcome to #{title}
         input(type='text' ng-model='nbPlayers' ng-change='calcPlayer()')
         section#playerSection
-            .playerSeat(ng-repeat='player in players' style='{{player.style}}')
-                |{{$index}}
-    
+            .playerSeat(ng-repeat='player in players' style='{{player.style}}', droppable="true"  data-playerIndex="{{$index}}" )
+                | {{$index+1}}
+                img.cardImg(ng-src='{{player.card.img}}' )
+        section#cardsChoice
+            .cardPick(ng-repeat='card in allCards',draggable="true", data-cardIndex="{{$index}}" )
+                
+                img.cardImg(ng-src='{{card.img}}' )
+        .clear
