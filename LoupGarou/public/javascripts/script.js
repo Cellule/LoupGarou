@@ -16,3 +16,22 @@ function Card(name,imgpath)
     this.img = imgpath;
 
 }
+
+GameUIState = {
+    DistributeCards:1
+    ,PlayGame:2
+}
+
+GameStates = {
+    Init:1
+    ,FirstNight:2
+};
+
+function Game()
+{
+    this.mState = GameStates.Init;
+    this.mUIState = GameUIState.DistributeCards;
+
+
+
+}

@@ -99,7 +99,6 @@ myApp.controller('gameController', function ($scope, $http) {
 
     $scope.calcPlayer = function()
     {
-        $scope.players = [];
         var container = $('#playerSection');
         var n = $scope.nbPlayers;
         var width = parseInt(container.css('width'),10);
@@ -114,22 +113,54 @@ myApp.controller('gameController', function ($scope, $http) {
         }
 
         var translation = width/2-$scope.seatSize/2;
-
+        var newPlayers = [];
         for (var i = 0; i < n; i++) {
             var angle = 2 * Math.PI * i / n - Math.PI/2;
             var x = Math.round(r * Math.cos(angle) + translation);
             var y = Math.round(r * Math.sin(angle) + translation);
+            var card = null;
+            if(i<$scope.players.length)
+            {
+                card = $scope.players[i].card;
+            }
             var p = {
                 x:x,
                 y:y,
                 style: "width:{0}px;height:{0}px;left:{1}px;top:{2}px;".format(s,x,y),
-                card:null,
+                card:card,
             };
 
-            $scope.players.push(p);
+            newPlayers.push(p);
         }
+        $scope.players = newPlayers;
         $scope.seatSize = s;
     };
 
+    $scope.setCenteredText = function(text)
+    {
+        var textBox = $("#playerSection .centered");
+        textBox.text(text);
+        $scope.centerWithParent(textBox);
+    }
+
+    $scope.centerWithParent = function(elem)
+    {
+        var p = elem.parent();
+        var wp = p.width();
+        var hp = p.height();
+        var w = wp*0.6;
+        elem.width(w);
+        var h = elem.height();
+
+        elem.css('left',(wp-w)/2);
+        elem.css('top',(hp-h)/2);
+    }
+
+    $scope.startGame = function()
+    {
+
+    }
+
+    $scope.setCenteredText("Start Game");
     $scope.calcPlayer();
 });
