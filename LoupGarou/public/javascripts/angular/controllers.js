@@ -25,7 +25,8 @@ myApp.directive('droppable', function () {
 
 myApp.controller('gameController', function ($scope, $http) {
     $scope.players = [];
-    $scope.nbPlayers = 1;
+    $scope.nbPlayers = 5;
+    $scope.game = new Game();
     $scope.allCards = [
         new Card("Paysan","images/carte1.png"),
         new Card("Paysan","images/carte2.png"),
@@ -112,7 +113,7 @@ myApp.controller('gameController', function ($scope, $http) {
             s = Math.round((arc-1)/1.4142135623);
         }
 
-        var translation = width/2-$scope.seatSize/2;
+        var translation = width/2-s/2;
         var newPlayers = [];
         for (var i = 0; i < n; i++) {
             var angle = 2 * Math.PI * i / n - Math.PI/2;
@@ -133,7 +134,6 @@ myApp.controller('gameController', function ($scope, $http) {
             newPlayers.push(p);
         }
         $scope.players = newPlayers;
-        $scope.seatSize = s;
     };
 
     $scope.setCenteredText = function(text)
@@ -158,7 +158,24 @@ myApp.controller('gameController', function ($scope, $http) {
 
     $scope.startGame = function()
     {
-
+        for(var i=0; i<$scope.players.length;)
+        {
+            var p = $scope.players[i];
+            if(p.card == null)
+            {
+                $scope.players.splice(i,1);
+            }
+            else
+                i++;
+        }
+        $scope.nbPlayers = $scope.players.length;
+        $scope.calcPlayer();
+        if($scope.nbPlayers > 4)
+        {
+            $scope.game.mUIState = GameUIStates.PlayGame;
+            $scope.game.mState = GameStates.FirstNight;
+            setCenteredText("First Night");
+        }
     }
 
     $scope.setCenteredText("Start Game");

@@ -17,7 +17,7 @@ function Card(name,imgpath)
 
 }
 
-GameUIState = {
+GameUIStates = {
     DistributeCards:1
     ,PlayGame:2
 }
@@ -30,7 +30,7 @@ GameStates = {
 function Game()
 {
     this.mState = GameStates.Init;
-    this.mUIState = GameUIState.DistributeCards;
+    this.mUIState = GameUIStates.DistributeCards;
 
 
 
